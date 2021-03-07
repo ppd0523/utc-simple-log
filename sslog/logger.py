@@ -5,6 +5,8 @@ More
 https://github.com/ppd0523/utc-simple-log.git
 """
 
+__all__ = ['SimpleLogger']
+
 import logging.handlers
 import os
 import datetime as dt
@@ -13,7 +15,7 @@ import pytz
 import time
 
 
-class KSTFormatter(logging.Formatter):
+class _KSTFormatter(logging.Formatter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -36,11 +38,11 @@ class KSTFormatter(logging.Formatter):
         return s
 
 
-class UTCFormatter(logging.Formatter):
+class _UTCFormatter(logging.Formatter):
     converter = time.gmtime
 
 
-class Singleton:
+class _Singleton:
     _instance = None
 
     def __new__(cls, *args, **kwargs):
@@ -50,10 +52,10 @@ class Singleton:
         return cls._instance
 
 
-class SimpleLogger(Singleton):
+class SimpleLogger(_Singleton):
     __initialized = False
 
-    def __init__(self, level=logging.DEBUG, *, formatter='UTC', path='./logs'):
+    def __init__(self, level=logging.DEBUG, *, formatter='UTC', file='./logs/log.txt', maxBytes=2000000, backupCount=5):
         """Logger
         :param level:
         SYMBOL              INTEGER
@@ -62,6 +64,10 @@ class SimpleLogger(Singleton):
         logging.WARNING     30
         logging.ERROR       40
         logging.CRITICAL    50
+
+        file: './logs/log.txt'
+        maxBytes: 2,000,000 bytes
+        backupCount : 5 files
 
         Example)
             logger = SimpleLogger()
@@ -76,15 +82,14 @@ class SimpleLogger(Singleton):
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(self.__getFormatter(formatter=formatter))
 
-        abspath = os.path.abspath(path)
-        filepath = os.path.join(abspath, 'log.txt')
-        _dir, _base = os.path.split(filepath)
+        abspath = os.path.abspath(file)
+        _dir, _base = os.path.split(abspath)
         os.makedirs(_dir, exist_ok=True)
         file_handler = logging.handlers.RotatingFileHandler(
-                filename=filepath,  # log filename
+                filename=abspath,  # log filename
                 mode='a',               # append-mode (e.g. 'w' write-mode)
-                maxBytes=2000000,       # 2MB
-                backupCount=5)          # max number of backup files
+                maxBytes=maxBytes,       # 2MB
+                backupCount=backupCount)          # max number of backup files
         file_handler.setFormatter(self.__getFormatter(formatter=formatter))
 
         self.__logger = logging.getLogger('Simple logger')
@@ -112,6 +117,10 @@ class SimpleLogger(Singleton):
     def critical(self):
         return self.__logger.critical
 
+    @property
+    def fatal(self):
+        return self.__logger.fatal
+
     def setLevel(self, level):
         """
         logging.DEBUG
@@ -133,11 +142,11 @@ class SimpleLogger(Singleton):
         datefmt = '%Y-%m-%dT%H:%M:%S'
 
         if formatter == 'UTC':
-            return UTCFormatter(fmt=fmt, datefmt=datefmt)
+            return _UTCFormatter(fmt=fmt, datefmt=datefmt)
         elif formatter == 'KST':
-            return UTCFormatter(fmt=fmt, datefmt=datefmt+'%z')
+            return _UTCFormatter(fmt=fmt, datefmt=datefmt + '%z')
         elif formatter == 'Asia/Seoul':
-            return KSTFormatter(fmt=fmt, datefmt=datefmt)
+            return _KSTFormatter(fmt=fmt, datefmt=datefmt)
 
     def _tests(self):
         self.__logger.debug('Debugging message')
@@ -145,6 +154,7 @@ class SimpleLogger(Singleton):
         self.__logger.warning('Warning message')
         self.__logger.error('Error message')
         self.__logger.critical('Critical message')
+        self.__logger.fatal('fatal message')
 
 
 if __name__ == '__main__':

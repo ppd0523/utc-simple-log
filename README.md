@@ -11,6 +11,10 @@ Simple log with UTC timer.
 # -*- coding: utf-8 -*-
 from sslog.logger import SimpleLogger
 
+# Default parameter
+# File: ./logs/log.txt
+# File size: 2Mb 
+# Rolling count: 5
 logger = SimpleLogger()
 
 logger.setLevel(logging.DEBUG)
@@ -29,4 +33,5 @@ logger.critical('files("./logs/log.txt")')
 2021-03-03T05:54:51, [ WARNING] [logger.py:_tests,L:149]: Warning message  
 2021-03-03T05:54:51, [   ERROR] [logger.py:_tests,L:150]: Error message  
 2021-03-03T05:54:51, [CRITICAL] [logger.py:_tests,L:151]: Critical message  
+2021-03-03T05:54:51, [CRITICAL] [logger.py:_tests,L:151]: FATAL message
 ```
