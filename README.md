@@ -1,6 +1,6 @@
 # UTC Simple Log
 
-Simple log with UTC timer.     
+Simple log with UTC timer     
 
 * No option
 * Both console and File
@@ -24,6 +24,7 @@ logger.info('This is a simple log.')
 logger.warning('Quick start')
 logger.error('It print to console and')
 logger.critical('files("./logs/log.txt")')
+logger.fatal('fatal and critical')
 ```
 
 ### Console and File
