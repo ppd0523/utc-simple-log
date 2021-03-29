@@ -1,20 +1,26 @@
 # UTC Simple Log
 
-Simple log with UTC timer     
+Simple log with UTC timer.
 
-* No option
+* Python 3.6 or higher
+* Default option
 * Both console and File
 * Singleton logger
 
 ## Quick start
+```shell script
+$ pip install utc-simple-log
+```
 ```python
-# -*- coding: utf-8 -*-
+"""
+example.py
+"""
 from sslog.logger import SimpleLogger
 
 # Default parameter
-# File: ./logs/log.txt
-# File size: 2Mb 
-# Rolling count: 5
+# file: './logs/log.txt'
+# maxBytes: 2000000 (2Mb) 
+# backupCount: 5
 logger = SimpleLogger()
 
 logger.setLevel(logging.DEBUG)
