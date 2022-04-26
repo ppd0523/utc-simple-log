@@ -6,6 +6,11 @@ Simple log with UTC timer.
 * Both console and File
 * Singleton logger
 
+## Install
+```bash
+pip install utc-simple-log
+```
+
 ## Quick start
 ```python
 # -*- coding: utf-8 -*-
